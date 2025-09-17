@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外部访问本地服务器指南</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #6c757d;
+            --success-color: #4cc9a4;
+            --error-color: #f72565;
+            --warning-color: #f8961e;
+            --info-color: #4895ef;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --background-color: #f5f7fa;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), #3a56d4);
+            color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2 i {
+            margin-right: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .status-not-accessible {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .status-accessible {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .solution-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .solution-card h3 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .solution-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            margin-top: 15px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a56d4;
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: var(--secondary-color);
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .code-block {
+            background-color: #2b2d42;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .info-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-box {
+            flex: 1;
+            background-color: #f0f5ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .info-container {
+                flex-direction: column;
+            }
+
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1><i class="fas fa-network-wired"></i> 外部访问本地服务器指南</h1>
+    <p>解决 localhost:63342 外部访问问题</p>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-question-circle"></i> 问题分析</h2>
+    <span class="status-indicator status-not-accessible">默认情况下不可外部访问</span>
+
+    <p>您提供的地址 <code>http://localhost:63342/JavaWeb_/static/ip-whitelist.html</code> 使用的是 <strong>localhost</strong>（127.0.0.1），这是一个回环地址，只能从<strong>本机</strong>访问。</p>
+
+    <div class="info-container">
+        <div class="info-box">
+            <h3><i class="fas fa-exclamation-triangle"></i> 为什么无法外部访问？</h3>
+            <p>localhost 和 127.0.0.1 是专门指向本机的地址，外部设备无法通过这些地址访问您的计算机。</p>
+        </div>
+        <div class="info-box">
+            <h3><i class="fas fa-lock"></i> 安全考虑</h3>
+            <p>默认情况下，开发服务器只绑定到本地接口，这是出于安全考虑，防止外部未经授权的访问。</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-wrench"></i> 解决方案</h2>
+    <p>要让外部设备访问您的本地服务器，您需要：</p>
+
+    <div class="solution-grid">
+        <div class="solution-card">
+            <h3><i class="fas fa-desktop"></i> 方法一：使用本机IP地址</h3>
+            <p>将 localhost 替换为您计算机的局域网IP地址（如 192.168.1.x）。</p>
+            <p>其他设备需要与您的计算机在同一局域网内。</p>
+            <div class="code-block">http://[您的IP地址]:63342/JavaWeb_/static/ip-whitelist.html</div>
+            <a href="#" class="btn btn-primary"><i class="fas fa-info-circle"></i> 查看我的IP</a>
+        </div>
+
+        <div class="solution-card">
+            <h3><i class="fas fa-cloud"></i> 方法二：使用内网穿透工具</h3>
+            <p>使用 ngrok、localtunnel 或 frp 等工具将本地服务暴露到公网。</p>
+            <p>这允许互联网上的任何设备访问您的本地服务器。</p>
+            <div class="code-block">ngrok http 63342</div>
+            <a href="#" class="btn btn-primary"><i class="fas fa-download"></i> 下载 ngrok</a>
+        </div>
+
+        <div class="solution-card">
+            <h3><i class="fas fa-server"></i> 方法三：修改服务器配置</h3>
+            <p>配置您的开发服务器监听所有网络接口（0.0.0.0），而不仅仅是本地回环地址。</p>
+            <p>具体方法取决于您使用的服务器软件（Apache、Nginx、Node.js等）。</p>
+            <div class="code-block">// Node.js示例
+                server.listen(63342, '0.0.0.0');</div>
+            <a href="#" class="btn btn-secondary"><i class="fas fa-cog"></i> 服务器配置指南</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2><i class="fas fa-shield-alt"></i> 安全提醒</h2>
+    <p>将本地服务器暴露给外部网络时，请注意以下安全事项：</p>
+
+    <ul style="margin-left: 20px; margin-bottom: 20px;">
+        <li>确保您的应用程序没有安全漏洞</li>
+        <li>使用防火墙限制访问</li>
+        <li>考虑添加身份验证机制</li>
+        <li>不要在生产环境中使用开发服务器</li>
+        <li>使用HTTPS加密数据传输</li>
+    </ul>
+
+    <a href="#" class="btn btn-secondary"><i class="fas fa-book"></i> 安全配置最佳实践</a>
+</div>
+
+<script>
+    // 获取本机IP地址功能
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+        if (btn.textContent.includes('查看我的IP')) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(`您的公网IP地址是: ${data.ip}\n\n局域网IP通常以 192.168.x.x、10.x.x.x 或 172.16.x.x 开头`);
+                    })
+                    .catch(() => {
+                        alert('无法获取IP信息。您的局域网IP可以在网络设置中查看。');
+                    });
+            });
+        } else if (btn.textContent.includes('下载 ngrok')) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://ngrok.com/download', '_blank');
+            });
+        }
+    });
+
+    // 安全指南链接
+    document.querySelector('.btn-secondary').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('安全最佳实践：\n1. 保持软件更新\n2. 使用强密码\n3. 启用防火墙\n4. 限制访问权限\n5. 定期备份数据');
+    });
+</script>
+</body>
+</html>

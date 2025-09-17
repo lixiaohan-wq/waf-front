@@ -1,0 +1,331 @@
+/* =====================================
+   style.css —— 通用后台风格（注册页风格继承）
+   ===================================== */
+:root {
+    --primary-color: #3B82F6;
+    --primary-hover: #2563EB;
+    --success-color: #22C55E;
+    --error-color: #EF4444;
+    --text-primary: #F9FAFB;
+    --text-secondary: #9CA3AF;
+    --background: #0F172A;
+    --card-background: rgba(30, 41, 59, 0.65);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-radius: 18px;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html,body { height: 100%; }
+
+/* 全局背景 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    display: flex;   /* sidebar + main */
+    background: var(--background);
+    color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 背景光斑 */
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    filter: blur(180px);
+    opacity: 0.35;
+    z-index: -1;
+}
+body::before { top: -250px; left: -200px; background: #3B82F6; }
+body::after  { bottom: -250px; right: -200px; background: #8B5CF6; }
+
+
+/* --------------------------
+   主体区域
+   -------------------------- */
+.main {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+
+    display: flex;
+    justify-content: center;   /* 内容始终居中 */
+    align-items: flex-start;
+}
+
+.main-inner {
+    width: 100%;
+    max-width: 1200px;  /* 限制最大宽度 */
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+
+
+/* --------------------------
+   按钮
+   -------------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background .15s ease, transform .06s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary { background: var(--primary-color); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-color);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.04); }
+
+/* --------------------------
+   表格
+   -------------------------- */
+.table-container { overflow:auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+th { color: var(--text-secondary); font-weight: 600; }
+tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ===========================
+   登录框：居中 + 放大 + 更大间距
+   把这一段放在 style.css 最后，覆盖旧的 .auth-container/.register-container 规则
+   =========================== */
+
+.auth-container,
+.register-container {
+    /* 固定在视口中央（比 absolute 更可靠） */
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999;
+
+    /* 更大更舒服的尺寸 */
+    width: 520px;           /* 桌面宽度（可按需改成 480/560） */
+    max-width: 92%;         /* 窄屏下不会超出 */
+    padding: 48px 44px;     /* 内边距更大，视觉更"松" */
+    box-sizing: border-box;
+
+    /* 保持注册页风格 */
+    background: var(--card-background);
+    backdrop-filter: blur(30px);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 30px 60px rgba(2,6,23,0.65);
+    animation: fadeIn .45s cubic-bezier(.22,.9,.37,1);
+    font-size: 16px;       /* 基础字体稍大 */
+    line-height: 1.45;
+}
+
+/* 标题与副标题放大并增加间距 */
+.auth-container .header h1,
+.register-container .header h1 {
+    font-size: 34px;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.6px;
+}
+.auth-container .header p,
+.register-container .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 22px;
+}
+
+/* 表单行、标签、输入框都放大并增加间距 */
+/* 输入框容器要相对定位，保证图标跟随 */
+:root{
+    --input-h: 50px;
+    --input-radius: 12px;
+    --icon-size: 20px;
+    --input-font: 16px;
+}
+
+/* 修改表单组结构 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* 输入框容器需要相对定位 */
+.input-container {
+    position: relative;    /* 图标基于此定位 */
+}
+
+/* 输入框：保持高度、内边距为图标留位 */
+.form-input {
+    width: 100%;
+    height: var(--input-h);
+    padding: 12px 60px 12px 14px; /* 右边留更多空间给图标和按钮 */
+    box-sizing: border-box;
+    border-radius: var(--input-radius);
+    font-size: var(--input-font);
+    line-height: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid rgba(255,255,255,0.06);
+    color: var(--text-primary);
+}
+
+/* 绝对定位图标：垂直严格居中 */
+.input-icon {
+    position: absolute;
+    right: 14px;               /* 离右边 14px，看起来美观 */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--icon-size);
+    line-height: 1;
+    color: var(--text-secondary);
+    pointer-events: none;      /* 不阻挡输入点击 */
+    z-index: 2;
+}
+
+/* 眼睛按钮位置调整 */
+.eye-btn {
+    position: absolute;
+    right: 44px; /* 向左移动，避免与验证图标重叠 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .12s;
+    padding: 0;
+    z-index: 4; /* 确保在最上层 */
+}
+
+.eye-btn:active { background: rgba(255,255,255,0.08); }
+.eye-btn:focus { outline: 2px solid rgba(59,130,246,0.16); }
+
+/* 验证状态图标位置调整 */
+.validation-icon {
+    position: absolute;
+    right: 14px; /* 保持在最右侧 */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    z-index: 3;
+    display: none;
+}
+
+.validation-icon.valid {
+    color: var(--success-color);
+    display: block;
+}
+.validation-icon.invalid {
+    color: var(--error-color);
+    display: block;
+}
+
+.validation-icon.valid ~ .input-icon,
+.validation-icon.invalid ~ .input-icon {
+    display: none; /* 有验证图标时隐藏输入图标 */
+}
+
+/* 错误消息样式 */
+.error-message {
+    font-size: 13px;
+    color: var(--error-color);
+    margin-top: 6px;
+    padding: 0 4px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* 提示文字样式 */
+.input-hint {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    padding: 0 4px;
+}
+
+/* if using font icon inside, remove default line-height issues */
+.input-icon i { display: inline-block; vertical-align: middle; }
+
+/* 按钮放大 */
+.button-group .btn,
+.actions .btn {
+    padding: 14px 26px;
+    font-size: 16px;
+    border-radius: 12px;
+}
+.btn-primary { padding-left: 26px; padding-right: 26px; }
+
+/* 按钮组间距 */
+.actions { display: flex; gap: 16px; align-items: center; margin-top: 18px; }
+
+/* 下方社交/辅助链接区保持呼吸感 */
+.auth-container .footer { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.03); }
+
+/* 小屏自适应：窄屏时变为接近全宽 */
+@media (max-width: 700px) {
+    .auth-container, .register-container {
+        position: fixed !important;
+        left: 50% !important;
+        top: 48% !important;
+        transform: translate(-50%, -48%) !important;
+        width: 92%;
+        padding: 26px;
+        border-radius: 16px;
+    }
+    .auth-container .header h1 { font-size: 28px; }
+    .form-input {
+        height: 44px;
+        font-size: 15px;
+        padding: 12px 50px 12px 14px; /* 调整小屏幕下的内边距 */
+    }
+    .button-group .btn { padding: 12px 18px; font-size: 15px; }
+    .eye-btn {
+        right: 32px;
+        width: 34px;
+        height: 34px;
+    }
+}
+
+
+/* --------------------------
+   响应式
+   -------------------------- */
+@media (max-width: 1000px) {
+    .sidebar { width:200px; }
+}
+@media (max-width: 760px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+    .sidebar nav { flex-direction: row; gap: 8px; }
+    .main { padding: 16px; }
+}

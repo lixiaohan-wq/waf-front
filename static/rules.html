@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>规则管理 - WAF 系统</title>
+    <link rel="stylesheet" href="css/main.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="top-nav">
+    <div class="logo">WAF控制台</div>
+    <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<div class="container">
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>导航菜单</h2>
+        </div>
+
+        <nav>
+            <a href="dashboard.html"><i class="fas fa-home"></i> 仪表盘</a>
+            <a href="logs.html"><i class="fas fa-file-alt"></i> 防护日志</a>
+            <a href="rules.html" class="active"><i class="fas fa-home"></i> 规则管理</a>
+            <a href="ip-blacklist.html"><i class="fas fa-ban"></i> IP 黑名单</a>
+            <a href="ip-whitelist.html"><i class="fas fa-check-circle"></i> IP 白名单</a>
+            <a href="users.html"><i class="fas fa-users"></i> 用户管理</a>
+            <a href="system-health.html"><i class="fas fa-heartbeat"></i> 系统健康</a>
+            <a href="login.html"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <h3><i class="fas fa-list"></i> 规则列表</h3>
+            <div class="button-group">
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> 新建规则</button>
+                <button class="btn btn-secondary"><i class="fas fa-sync"></i> 刷新规则</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th width="15%">规则</th>
+                        <th width="65%">规则描述</th>
+                        <th width="20%">动作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>101</td>
+                        <td>拦截常见 SQL 注入</td>
+                        <td><button class="btn btn-secondary"><i class="fas fa-edit"></i> 编辑</button></td>
+                    </tr>
+                    <tr>
+                        <td>102</td>
+                        <td>防护 XSS 攻击</td>
+                        <td><button class="btn btn-secondary"><i class="fas fa-edit"></i> 编辑</button></td>
+                    </tr>
+                    <tr>
+                        <td>103</td>
+                        <td>屏蔽恶意 IP</td>
+                        <td><button class="btn btn-secondary"><i class="fas fa-edit"></i> 编辑</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 屏幕尺寸指示器（仅用于演示） -->
+<div class="screen-size" id="screenSize">屏幕宽度: <span id="width"></span>px</div>
+
+<script>
+    // 汉堡菜单功能
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        sidebar.classList.toggle('active');
+    });
+
+    // 更新屏幕尺寸显示
+    function updateScreenSize() {
+        const width = window.innerWidth;
+        document.getElementById('width').textContent = width;
+
+        // 根据屏幕尺寸添加提示
+        let message = "";
+        if (width < 480) {
+            message = " (超小屏幕)";
+        } else if (width < 768) {
+            message = " (小屏幕)";
+        } else if (width < 1000) {
+            message = " (中等屏幕)";
+        } else {
+            message = " (大屏幕)";
+        }
+
+        document.getElementById('width').textContent = width + message;
+    }
+
+    // 初始更新
+    updateScreenSize();
+
+    // 监听窗口大小变化
+    window.addEventListener('resize', updateScreenSize);
+</script>
+</body>
+</html>

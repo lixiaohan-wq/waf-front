@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>注册 - WAF 管理系统</title>
+    <link rel="stylesheet" href="css/style.css?v=5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* 仅本页需要的微调：眼睛按钮位置、输入图标偏移 */
+        .form-group { position: relative; margin-bottom: 30px; }
+        .input-icon { right: 20px; } /* 把原来的图标靠右一点，为眼睛留位 */
+        .eye-btn {
+            position: absolute;
+            right: 70px; /* 在 input-icon 之前显示 */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .12s;
+            padding: 0;
+        }
+        .eye-btn:active { background: rgba(255,255,255,0.08); }
+        .eye-btn:focus { outline: 2px solid rgba(59,130,246,0.16); }
+
+        /* 验证状态图标样式 */
+        .validation-icon {
+            position: absolute;
+            right: 48px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            z-index: 3;
+            display: none;
+        }
+        .validation-icon.valid { color: var(--success-color); display: block; }
+        .validation-icon.invalid { color: var(--error-color); display: block; }
+
+        /* 错误消息样式 */
+        .error-message {
+            font-size: 13px;
+            color: var(--error-color);
+            margin-top: 6px;
+            padding: 0 4px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+
+        /* 小手机把右侧图标往左一点防止挤 */
+        @media (max-width: 420px) {
+            .eye-btn { right: 60px; width: 34px; height: 34px; }
+            .input-icon { right: 8px; }
+            .validation-icon { right: 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="header">
+        <h1>Register</h1>
+        <p>Create your account</p>
+    </div>
+
+    <form method="post" id="registerForm" novalidate>
+        <!-- 用户名输入框 -->
+        <div class="form-group">
+            <label for="username">Username</label>
+            <div class="input-container">
+                <input type="text" id="username" name="username" class="form-input" placeholder="Username"
+                       required pattern="[\u4e00-\u9fa5a-zA-Z0-9]{3,16}">
+                <span class="input-icon"><i class="fas fa-user"></i></span>
+                <span class="validation-icon" id="username-validation"></span>
+            </div>
+            <div class="error-message" id="username-error"></div>
+        </div>
+
+        <!-- 邮箱输入框 -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-container">
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email" required>
+                <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                <span class="validation-icon" id="email-validation"></span>
+            </div>
+            <div class="error-message" id="email-error"></div>
+        </div>
+
+        <!-- 密码输入框 -->
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-container">
+                <input type="password" id="password" name="password" class="form-input" placeholder="Password" required>
+                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                <span class="validation-icon" id="password-validation"></span>
+                <button type="button" class="eye-btn" data-target="password">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="error-message" id="password-error"></div>
+        </div>
+
+        <!-- 确认密码输入框 -->
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <div class="input-container">
+                <input type="password" id="confirm-password" name="confirm-password" class="form-input"
+                       placeholder="Confirm Password" required>
+                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                <span class="validation-icon" id="confirm-password-validation"></span>
+                <button type="button" class="eye-btn" data-target="confirm-password">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="error-message" id="confirm-password-error"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</button>
+            <button type="reset" class="btn btn-secondary"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+    </form>
+
+    <div class="footer">
+        <a href="login.html" class="btn-link"><i class="fas fa-sign-in-alt"></i> Back to Login</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取表单元素
+        const form = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+
+        // 获取验证图标和错误消息元素
+        const usernameValidation = document.getElementById('username-validation');
+        const emailValidation = document.getElementById('email-validation');
+        const passwordValidation = document.getElementById('password-validation');
+        const confirmPasswordValidation = document.getElementById('confirm-password-validation');
+
+        const usernameError = document.getElementById('username-error');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+        const confirmPasswordError = document.getElementById('confirm-password-error');
+
+        // 验证用户名
+        function validateUsername() {
+            const value = usernameInput.value.trim();
+            if (!value) {
+                showError(usernameValidation, usernameError, '请输入用户名');
+                return false;
+            }
+
+            if (!/^[\u4e00-\u9fa5a-zA-Z0-9]{3,16}$/.test(value)) {
+                showError(usernameValidation, usernameError, '用户名需为3-16位，支持中文/字母/数字');
+                return false;
+            }
+
+            showSuccess(usernameValidation, usernameError, '用户名可用');
+            return true;
+        }
+
+        // 验证邮箱
+        function validateEmail() {
+            const value = emailInput.value.trim();
+            if (!value) {
+                showError(emailValidation, emailError, '请输入邮箱');
+                return false;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                showError(emailValidation, emailError, '邮箱格式不正确');
+                return false;
+            }
+
+            showSuccess(emailValidation, emailError, '邮箱格式正确');
+            return true;
+        }
+
+        // 验证密码
+        function validatePassword() {
+            const value = passwordInput.value;
+            if (!value) {
+                showError(passwordValidation, passwordError, '请输入密码');
+                return false;
+            }
+
+            const hasNumber = /[0-9]/.test(value);
+            const hasLower = /[a-z]/.test(value);
+            const hasUpper = /[A-Z]/.test(value);
+
+            if (value.length < 10 || value.length > 20 || !hasNumber || !hasLower || !hasUpper) {
+                showError(passwordValidation, passwordError, '密码需10-20位，包含数字、大写字母和小写字母');
+                return false;
+            }
+
+            showSuccess(passwordValidation, passwordError, '密码格式正确');
+            return true;
+        }
+
+        // 验证确认密码
+        function validateConfirmPassword() {
+            const value = confirmPasswordInput.value;
+            const passwordValue = passwordInput.value;
+
+            if (!value) {
+                showError(confirmPasswordValidation, confirmPasswordError, '请确认密码');
+                return false;
+            }
+
+            if (value !== passwordValue) {
+                showError(confirmPasswordValidation, confirmPasswordError, '两次密码不一致');
+                return false;
+            }
+
+            showSuccess(confirmPasswordValidation, confirmPasswordError, '密码确认无误');
+            return true;
+        }
+
+        // 显示错误
+        function showError(validationEl, errorEl, message) {
+            validationEl.className = 'validation-icon invalid';
+            validationEl.innerHTML = '<i class="fas fa-times-circle"></i>';
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        // 显示成功
+        function showSuccess(validationEl, errorEl, message) {
+            validationEl.className = 'validation-icon valid';
+            validationEl.innerHTML = '<i class="fas fa-check-circle"></i>';
+            errorEl.textContent = message || '';
+            errorEl.classList.remove('show');
+        }
+
+        // 实时验证
+        usernameInput.addEventListener('input', validateUsername);
+        emailInput.addEventListener('input', validateEmail);
+        passwordInput.addEventListener('input', validatePassword);
+        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+        // 失去焦点时验证
+        usernameInput.addEventListener('blur', validateUsername);
+        emailInput.addEventListener('blur', validateEmail);
+        passwordInput.addEventListener('blur', validatePassword);
+        confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+
+        // 表单提交
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const isUsernameValid = validateUsername();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            const isConfirmPasswordValid = validateConfirmPassword();
+
+            if (isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+                // 表单验证通过，跳转到登录页面
+                window.location.href = 'login.html';
+            } else {
+                // 聚焦第一个错误字段
+                if (!isUsernameValid) usernameInput.focus();
+                else if (!isEmailValid) emailInput.focus();
+                else if (!isPasswordValid) passwordInput.focus();
+                else if (!isConfirmPasswordValid) confirmPasswordInput.focus();
+            }
+        });
+
+        // 重置表单
+        form.addEventListener('reset', function() {
+            // 清除所有验证状态和错误消息
+            [usernameValidation, emailValidation, passwordValidation, confirmPasswordValidation].forEach(el => {
+                el.className = 'validation-icon';
+                el.innerHTML = '';
+            });
+
+            [usernameError, emailError, passwordError, confirmPasswordError].forEach(el => {
+                el.textContent = '';
+                el.classList.remove('show');
+            });
+        });
+
+        // 眼睛按钮功能 - 显示/隐藏密码
+        document.querySelectorAll('.eye-btn').forEach(btn => {
+            btn.addEventListener('mousedown', function() {
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).type = 'text';
+            });
+
+            btn.addEventListener('mouseup', function() {
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).type = 'password';
+            });
+
+            btn.addEventListener('mouseleave', function() {
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).type = 'password';
+            });
+        });
+    });
+</script>
+</body>
+</html>
