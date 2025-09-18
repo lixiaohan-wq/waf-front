@@ -14,7 +14,7 @@
         <p>欢迎使用 WAF 管理系统</p>
     </div>
 
-    <form action="dashboard.html" method="post" id="loginForm">
+    <form id="loginForm">
         <div class="form-group">
             <label class="form-label">用户名</label>
             <input type="text" class="form-input" name="username" placeholder="请输入用户名" required />
@@ -35,7 +35,13 @@
         <a href="./static/register.html" class="btn-link"><i class="fas fa-user-plus"></i> 没有账号？去注册</a>
     </div>
 </div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // 阻止表单默认提交
+        // 简单模拟登录成功，直接跳转
+        window.location.href = "static/dashboard.html";
+    });
+</script>
 </body>
 </html>
-
-
